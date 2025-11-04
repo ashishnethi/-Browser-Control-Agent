@@ -9,11 +9,9 @@ from typing import Dict, List, Optional, Callable, Any
 import random
 import string
 
-# Retry configuration
 MAX_RETRIES = 3
 RETRY_DELAY = 1.0
 
-# Event loop policy fix for Windows (set in start_server.py)
 if platform.system() == 'Windows' and sys.version_info >= (3, 8):
     try:
         if not isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsProactorEventLoopPolicy):
@@ -49,7 +47,6 @@ async def run_action_plan(plan: list, send_event: Callable) -> list:
                 })
                 return []
             
-            # Create a new context with realistic viewport
             context = await browser.new_context(
                 viewport={"width": 1920, "height": 1080},
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
@@ -58,7 +55,6 @@ async def run_action_plan(plan: list, send_event: Callable) -> list:
             
             await send_event({"type": "status", "message": "Browser initialized", "status": "ready"})
             
-            # Execute each step in the plan
             for step_idx, step in enumerate(plan):
                 action = step.get("action")
                 await send_event({
@@ -208,8 +204,7 @@ async def _handle_filter_price(page, step: dict, send_event: Callable):
         await page.wait_for_load_state("networkidle", timeout=10000)
         await asyncio.sleep(2)
     except:
-        pass  # Will filter in post-extraction
-    # Store for post-extraction filtering
+        pass
     step["max_price"], step["min_price"] = max_p, min_p
 
 
@@ -496,7 +491,6 @@ async def _handle_extract_products(page, step: dict, send_event: Callable) -> Li
     try:
         products = await page.evaluate(extraction_script)
         
-        # Validate and filter products (different rules for restaurants vs products)
         valid_products = []
         for product in (products or []):
             name = product.get("name", "").strip()
@@ -507,7 +501,6 @@ async def _handle_extract_products(page, step: dict, send_event: Callable) -> Li
             try:
                 price_val = int(price_str) if price_str else 0
                 
-                # For restaurants: name required, price optional; For products: both required
                 if site == "zomato":
                     product["price"] = str(price_val) if price_val > 0 else ""
                     product["url"] = product.get("url", "") or ""
@@ -529,7 +522,6 @@ async def _handle_extract_products(page, step: dict, send_event: Callable) -> Li
                 continue
         products = valid_products
         
-        # Filter by rating (for restaurants) or price (for products)
         filtered = products
         if step.get("min_rating") and site == "zomato":
             min_rating = float(step.get("min_rating"))
@@ -595,7 +587,6 @@ async def _handle_fill_form_field(page, step: dict, send_event: Callable):
 
 
 async def _handle_submit_form(page, step: dict, send_event: Callable):
-    """Handle form submission"""
     selectors = "button[type='submit'], input[type='submit'], button:has-text('Submit')"
     if await _find_selector_with_retry(page, selectors):
         await page.click(selectors.split(",")[0])
