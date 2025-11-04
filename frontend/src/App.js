@@ -27,9 +27,6 @@ function App() {
   };
 
   const connectWebSocket = () => {
-    // Connect to backend WebSocket
-    // In development, proxy handles this (see package.json)
-    // In production, use REACT_APP_BACKEND_URL or default to same host
     const backendHost = process.env.REACT_APP_BACKEND_URL || 
                         (window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host);
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
