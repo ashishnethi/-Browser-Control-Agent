@@ -301,7 +301,6 @@ Test WebSocket connection:
 - [ ] Screenshot capture and analysis
 - [ ] More sophisticated form field detection
 - [ ] Cross-site comparison with unified schema
-- [ ] Voice input support
 - [ ] Browser state persistence across sessions
 - [ ] Custom workflow definitions
 
