@@ -34,7 +34,7 @@ if __name__ == "__main__":
             "backend.app.main:app",
             host="0.0.0.0",
             port=8000,
-            reload=False,  # Disable reload to avoid event loop issues
+            reload=False,
             log_level="info"
         )
     except KeyboardInterrupt:
