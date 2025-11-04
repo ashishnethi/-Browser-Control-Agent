@@ -120,7 +120,6 @@ An AI-powered conversational browser automation agent that controls a real brows
    python start_server.py
    ```
    
-   Or simply double-click `run_backend.bat`
    
    This is required to fix the Playwright subprocess issue on Windows.
 
