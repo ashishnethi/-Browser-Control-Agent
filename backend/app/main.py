@@ -1,9 +1,7 @@
-# CRITICAL: Set event loop policy FIRST, before any other imports
 import sys
 import platform
 import asyncio
 
-# Fix for Windows subprocess issue with Playwright - MUST be first
 if platform.system() == 'Windows':
     if sys.version_info >= (3, 8):
         # Windows ProactorEventLoopPolicy supports subprocess operations required by Playwright
@@ -69,7 +67,6 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             user_text = await websocket.receive_text()
             
-            # Send user message acknowledgment
             await send_event({
                 "type": "user_message",
                 "content": user_text
@@ -89,7 +86,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 "data": intent_data
             })
 
-            # Generate plan
             await send_event({
                 "type": "status",
                 "message": "Planning actions...",
@@ -113,7 +109,6 @@ async def websocket_endpoint(websocket: WebSocket):
             
             results = await run_action_plan(plan, send_event)
 
-            # Filter invalid results (relaxed for restaurants)
             valid = []
             for r in results:
                 name = r.get("name", "").strip()
@@ -126,7 +121,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         if price_val >= 100 or not price_str or price_str == "0":
                             valid.append(r)
                     except:
-                        # If price parsing fails, include if it's likely a restaurant
                         if not price_str or price_str == "0":
                             valid.append(r)
             
