@@ -1,4 +1,4 @@
-# Quash Browser Control Agent
+# Browser Control Agent
 
 An AI-powered conversational browser automation agent that controls a real browser through natural language. The system demonstrates strong backend design, reliable browser control, conversational UX, and clean AI orchestration.
 
